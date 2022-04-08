@@ -2,11 +2,11 @@
 # ceph-study
 ## 1.环境准备
 ***
-![](img/rook.png)
+![rook环境](img/rook.png)
 * 采用rook部署ceph集群前置条件 k8s 1.16+  至少一个节点有裸磁盘或裸分区或volumeMode=block的存储卷
 * [rook官方文档](https://rook.io/)
 ***
- ![s](img/node.png)
+ ![node环境](img/node.png)
 * k8s集群采用一主三从 每一个节点都有一个vdb裸盘(一个节点可以有多个，也可以没有，至少保证一块裸盘)，红色部分是已经部署成功才有的状态
 * 采用rook部署默认的ceph集群会默认自动发现所有节点的裸盘，与vdb名字无关，也可修改下面的yaml资源文件发现固定名称的裸盘
 * 会在每一个节点启动一个osd的pod,master节点有污点无法调度,可以删除污点或修改下面的yaml支持osd污点容忍
