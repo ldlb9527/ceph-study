@@ -1,4 +1,4 @@
-![](https://img.shields.io/badge/-kubernetes--admin--backend-green)
+![](https://img.shields.io/badge/-ceph-green)
 # ceph-study
 ## 1.环境准备
 ***
