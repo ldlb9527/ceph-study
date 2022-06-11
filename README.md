@@ -194,3 +194,10 @@ pg_autoscale_mode: on
 [root@master ~]# ceph osd pool set test11 size 1 ##副本数设置为1
 set pool 4 size to 1
 ```
+***
+## 8.删除存储池
+* `ceph osd pool delete pool_name pool_name  --yes-i-really-really-mean-it`,存储池的名字要写两边
+``` shell
+[root@master ~]# ceph osd pool delete test2 test2  --yes-i-really-really-mean-it
+pool 'test2' removed
+```
