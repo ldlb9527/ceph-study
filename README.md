@@ -106,7 +106,7 @@ EOF
 ```
 * `yum -y install ceph-common` 安装成功后执行`ceph -s`查看ceph集群状态
 ***
-# 三、命令
+# 三、存储池的相关操作
 ## 1.创建存储池：`ceph osd pool create pool_name pg_num [pgp_num] [replicated] [crush-ruleset-name] [expected-num-objects]`,例如：`ceph osd pool create test1 128 128`
 * `pool_name`:池的名字
 * `pg_num`pg的数量
@@ -145,7 +145,7 @@ set-quota max_objects = 10000 for pool test11
 set-quota max_bytes = 102400 for pool test11
 ```
 ***
-## 6.快照
+## 6.存储池快照
 * `ceph osd pool mksnap pool_name snap_name`,创建存储池的快照
 ``` shell
 [root@master ~]# ceph osd pool mksnap test11 test11-snap01
@@ -169,7 +169,7 @@ selected snap 3 'test11-snap01'
 error getting test11/object: (2) No such file or directory
 ```
 ***
-## 7.池的参数
+## 7.存储池的参数
 * `ceph osd pool get pool_name all`,查看存储池的参数(规则配置)，`size`、`pg_bum`和`crush_rule`是最重要的规则
 ``` shell
 [root@master ~]# ceph osd  pool get test11 all
@@ -196,7 +196,7 @@ set pool 4 size to 1
 ```
 ***
 ## 8.删除存储池
-* `ceph osd pool delete pool_name pool_name  --yes-i-really-really-mean-it`,存储池的名字要写两边
+* `ceph osd pool delete pool_name pool_name  --yes-i-really-really-mean-it`,存储池的名字要写两遍
 ``` shell
 [root@master ~]# ceph osd pool delete test2 test2  --yes-i-really-really-mean-it
 pool 'test2' removed
