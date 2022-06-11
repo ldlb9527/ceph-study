@@ -108,3 +108,4 @@ EOF
 ***
 # 三、命令
 ## 1.`ceph osd pool create <pool_name> <pg_name> <pgp_name>`
+* 
