@@ -1,5 +1,34 @@
 ![](https://img.shields.io/badge/-ceph-green)
-# ceph-study
+# 一、基础概念
+## 1.基本介绍
+* `Ceph uniquely delivers object, block, and file storage in one unified system.` Ceph是目前非常流行的**统一存储系统**，所谓统一存储系统，就是通过Ceph集群同时提供块**设备存储**、**对象存储**以及**文件系统服务**
+  ![ceph架构图](img/ceph架构图.png)
+## 2.Object: 
+* `Object`是Ceph最底层的存储单元，大小可以自己定义通常为2M或4M,每个Object都包含了在集群范围内唯一的标识OID、二进制数据、以及由一组键值对组成的元数据。
+## 3.POOL
+* `POOL`是Ceph中的一些object的逻辑分组,Pool由若干个PG组成，其属性包括：所有者和访问权限、Object副本数目、**PG数目和CRUSH规则集合**等,Ceph中的Pool有两种类型
+## 4.OSD
+* `OSD`全称Object Storage Device，也就是负责响应客户端请求返回具体数据的进程。一个Ceph集群一般都有很多个OSD。
+## 5.PG
+* `PG`全称Placement Grouops，归置组，是一个逻辑的概念，一个PG包含多个OSD。引入PG这一层其实是为了更好的分配数据和定位数据
+## 6.Monitor
+* 一个Ceph集群需要多个`Monitor`组成的小集群，它们通过Paxos同步数据，用来保存OSD的元数据。也可是单个，但会有单点故障
+## 7.RADOS
+* `RADOS`全称Reliable Autonomic Distributed Object Store，是Ceph集群的精华，用户实现 数据分配、Failover等集群操作。
+## 8.Libradio
+* `Libradio`是Rados提供库，因为RADOS是协议很难直接访问，因此上层的RBD、RGW和CephFS都是通过librados访问的，目前提供PHP、Ruby、Java、Python、C和C++支持。
+## 9.CRUSH
+* `CRUSH`是Ceph使用的数据分布算法，类似一致性哈希，让数据分配到预期的地方。
+## 10.RBD
+* `RBD`全称RADOS block device，是Ceph对外提供的块设备服务。
+## 11.RGW
+* `RGW`全称RADOS gateway，是Ceph对外提供的对象存储服务，接口与S3和Swift兼容。
+## 12.CephFS
+* `CephFS`全称Ceph File System，是Ceph对外提供的文件系统服务。
+## 13.MDS
+* `MDS`: 全称Ceph Metadata Server，是CephFS服务依赖的元数据服务。
+***
+# 二、安装
 ## 1.环境准备
 ***
 ![rook环境](img/rook.png)
@@ -76,3 +105,6 @@ priority=1
 EOF
 ```
 * `yum -y install ceph-common` 安装成功后执行`ceph -s`查看ceph集群状态
+***
+# 三、命令
+## 1.`ceph osd pool create <pool_name> <pg_name> <pgp_name>`
