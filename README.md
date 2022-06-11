@@ -107,5 +107,11 @@ EOF
 * `yum -y install ceph-common` 安装成功后执行`ceph -s`查看ceph集群状态
 ***
 # 三、命令
-## 1.`ceph osd pool create <pool_name> <pg_name> <pgp_name>`
-* 
+## 1.创建存储池：`ceph osd pool create pool_name pg_num [pgp_num] [replicated] [crush-ruleset-name] [expected-num-objects]`,例如：`ceph osd pool create test1 128 128`
+* `pool_name`:池的名字
+* `pg_num`pg的数量
+* `pgp_num`:pgp的数量，池的pg有效数，通常与pg总数相等
+* `replicated`:复制池(默认)
+* `crush-ruleset-name`:应用于crush规则的名称，不指定则采取默认的规则，为`osd_pool_default_crush_replicated_ruleset`，可通过`ceph osd crush dump`查看
+* `expected-num-objects`:池中预期的对象数量，如果事先知道这个值，ceph可在创建池时在OSD的XFS系统上准备文件夹结构
+否则ceph会在对象数量增加时重组这个结构，重组会带来延迟影响
