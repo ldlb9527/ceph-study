@@ -115,3 +115,82 @@ EOF
 * `crush-ruleset-name`:应用于crush规则的名称，不指定则采取默认的规则，为`osd_pool_default_crush_replicated_ruleset`，可通过`ceph osd crush dump`查看
 * `expected-num-objects`:池中预期的对象数量，如果事先知道这个值，ceph可在创建池时在OSD的XFS系统上准备文件夹结构
 否则ceph会在对象数量增加时重组这个结构，重组会带来延迟影响
+***
+## 2.查看存储池
+* `ceph osd lspools`或`ceph osd pool ls`,查看已有的存储池
+* `ceph osd pool ls detail`或`ceph osd pool stats pool_name `,查看存储池详情
+* `ceph df` 池的使用量统计
+***
+## 3.为存储池启用ceph应用类型
+* `ceph osd pool application enable pool_name type`，type可为`rbd`,`rgw`,`cephfs`
+``` shell
+[root@master ~]# ceph osd pool application enable test1 rbd
+enabled application 'rbd' on pool 'test1'
+```
+## 4.重命名池
+* `ceph osd pool rename test1 test11`
+``` shell
+[root@master ~]# ceph osd pool rename test1 test11
+pool 'test1' renamed to 'test11'
+```
+## 5.设置存储池配额，当达到配额时，操作会被无限期阻止，与ceph存储集群已满时一致
+* `ceph osd pool set-quota pool_name max_objects counts`,设置存储池最大对象数
+``` shell
+[root@master ~]# ceph osd pool set-quota test11 max_objects 10000
+set-quota max_objects = 10000 for pool test11
+```
+* `ceph osd pool set-quota pool_name max_bytes bytes`,设置存储池最大字节数
+``` shell
+[root@master ~]# ceph osd pool set-quota test11 max_bytes 102400
+set-quota max_bytes = 102400 for pool test11
+```
+***
+## 6.快照
+* `ceph osd pool mksnap pool_name snap_name`,创建存储池的快照
+``` shell
+[root@master ~]# ceph osd pool mksnap test11 test11-snap01
+created pool test11 snap test11-snap01
+```
+``` shell
+[root@master ~]# ceph osd pool ls  detail
+pool 1 'device_health_metrics' replicated size 3 min_size 2 crush_rule 0 object_hash rjenkins pg_num 1 pgp_num 1 autoscale_mode on last_change 22 flags hashpspool stripe_width 0 pg_num_min 1 application mgr_devicehealth
+pool 4 'test11' replicated size 3 min_size 2 crush_rule 0 object_hash rjenkins pg_num 32 pgp_num 32 autoscale_mode on last_change 1689 lfor 0/1224/1222 flags hashpspool,pool_snaps max_bytes 102400 max_objects 10000 stripe_width 0 application rbd
+	snap 1 'test11-snap01' 2022-06-11T17:49:54.851555+0000
+```
+* `ceph osd pool rmsnap pool_name snap_name`,删除存储池快照
+``` shell
+[root@master ~]# ceph osd pool rmsnap test11 test11-snap01
+removed pool test11 snap test11-snap01
+```
+* `rados -p pool_name -s snap_name get object test.yaml`
+``` shell
+[root@master ~]# rados -p test11 -s test11-snap01 get object test.yaml ##池中没有文件或目录报错
+selected snap 3 'test11-snap01'
+error getting test11/object: (2) No such file or directory
+```
+***
+## 7.池的参数
+* `ceph osd pool get pool_name all`,查看存储池的参数(规则配置)，`size`、`pg_bum`和`crush_rule`是最重要的规则
+``` shell
+[root@master ~]# ceph osd  pool get test11 all
+size: 3
+min_size: 2
+pg_num: 32
+pgp_num: 32
+crush_rule: replicated_rule
+hashpspool: true
+nodelete: false
+nopgchange: false
+nosizechange: false
+write_fadvise_dontneed: false
+noscrub: false
+nodeep-scrub: false
+use_gmt_hitset: 1
+fast_read: 0
+pg_autoscale_mode: on
+```
+* `ceph osd pool set pool_name param value`,设置存储池的参数(规则配置)
+``` shell
+[root@master ~]# ceph osd pool set test11 size 1 ##副本数设置为1
+set pool 4 size to 1
+```
