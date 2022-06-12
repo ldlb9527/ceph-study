@@ -205,3 +205,100 @@ set pool 4 size to 1
 pool 'test2' removed
 ```
 ***
+# 命令汇总
+***
+* `ceph osd ls`,查看所有osd
+``` shell
+[root@master ~]# ceph osd ls
+0
+1
+2
+3
+```
+***
+* `ceph osd stat`,查看osd状态
+``` shell
+[root@master ~]# ceph osd stat
+4 osds: 4 up (since 47h), 4 in (since 47h); epoch: e1699
+```
+***
+* `ceph osd tree`,查看osd树形结构
+``` shell
+[root@master ~]# ceph osd tree
+ID  CLASS  WEIGHT   TYPE NAME        STATUS  REWEIGHT  PRI-AFF
+-1         0.03918  root default                              
+-7         0.00980      host master                           
+ 1    hdd  0.00980          osd.1        up   1.00000  1.00000
+-3         0.00980      host node1                            
+ 0    hdd  0.00980          osd.0        up   1.00000  1.00000
+-5         0.00980      host node2                            
+ 2    hdd  0.00980          osd.2        up   1.00000  1.00000
+-9         0.00980      host node3                            
+ 3    hdd  0.00980          osd.3        up   1.00000  1.00000
+```
+***
+* `ceph osd dump`,导出osd详细信息
+``` shell
+[root@master ~]# ceph osd dump
+epoch 1699
+fsid 2ceb7b6b-78a0-40cc-8a2f-abd695c70914
+created 2022-06-10T16:48:19.983619+0000
+modified 2022-06-12T15:23:03.169874+0000
+flags sortbitwise,recovery_deletes,purged_snapdirs,pglog_hardlimit
+crush_version 7
+full_ratio 0.95
+backfillfull_ratio 0.9
+nearfull_ratio 0.85
+require_min_compat_client luminous
+min_compat_client jewel
+require_osd_release octopus
+pool 1 'device_health_metrics' replicated size 3 min_size 2 crush_rule 0 object_hash rjenkins pg_num 1 pgp_num 1 autoscale_mode on last_change 22 flags hashpspool stripe_width 0 pg_num_min 1 application mgr_devicehealth
+pool 4 'test11' replicated size 2 min_size 1 crush_rule 0 object_hash rjenkins pg_num 32 pgp_num 32 autoscale_mode on last_change 1695 lfor 0/1224/1222 flags hashpspool,pool_snaps max_bytes 102400 max_objects 10000 stripe_width 0 application rbd
+	snap 3 'test11-snap01' 2022-06-11T17:56:30.251872+0000
+max_osd 4
+osd.0 up   in  weight 1 up_from 9 up_thru 1695 down_at 0 last_clean_interval [0,0) [v2:10.244.2.236:6800/118535083,v1:10.244.2.236:6801/118535083] [v2:10.244.2.236:6802/118535083,v1:10.244.2.236:6803/118535083] exists,up affad9fa-2e9b-4a51-86a6-25623489d826
+osd.1 up   in  weight 1 up_from 12 up_thru 1695 down_at 0 last_clean_interval [0,0) [v2:10.244.0.200:6800/2167737203,v1:10.244.0.200:6801/2167737203] [v2:10.244.0.200:6802/2167737203,v1:10.244.0.200:6803/2167737203] exists,up 94d2bece-d6ca-4209-8fdf-b0e76e396da5
+osd.2 up   in  weight 1 up_from 12 up_thru 1695 down_at 0 last_clean_interval [0,0) [v2:10.244.1.178:6800/3465597621,v1:10.244.1.178:6801/3465597621] [v2:10.244.1.178:6802/3465597621,v1:10.244.1.178:6803/3465597621] exists,up 24da08d8-973b-4de8-9735-fac864f1d5ed
+osd.3 up   in  weight 1 up_from 17 up_thru 1695 down_at 0 last_clean_interval [0,0) [v2:10.244.3.47:6800/1888772417,v1:10.244.3.47:6801/1888772417] [v2:10.244.3.47:6802/1888772417,v1:10.244.3.47:6803/1888772417] exists,up 3b4fcd7b-533b-40a5-ab05-a61e0c2b8492
+```
+***
+* `ceph mon stat`,查看Monitor状态
+``` shell
+[root@master ~]# ceph mon stat
+e1: 1 mons at {a=[v2:10.100.154.12:3300/0,v1:10.100.154.12:6789/0]}, election epoch 3, leader 0 a, quorum 0 a
+```
+***
+* `ceph mon dump`,导出Monitor详细信息
+``` shell
+[root@master ~]# ceph mon dump
+dumped monmap epoch 1
+epoch 1
+fsid 2ceb7b6b-78a0-40cc-8a2f-abd695c70914
+last_changed 2022-06-10T16:48:19.048859+0000
+created 2022-06-10T16:48:19.048859+0000
+min_mon_release 15 (octopus)
+0: [v2:10.100.154.12:3300/0,v1:10.100.154.12:6789/0] mon.a
+```
+***
+* `ceph pg dump`,导出PG详细信息
+***
+* `ceph osd crush dump`,导出CRUSH详细信息
+***
+* `ceph -s`或`ceph status`,查看ceph集群的状态
+``` shell
+[root@master ~]# ceph -s
+  cluster:
+    id:     2ceb7b6b-78a0-40cc-8a2f-abd695c70914
+    health: HEALTH_OK
+ 
+  services:
+    mon: 1 daemons, quorum a (age 47h)
+    mgr: a(active, since 47h)
+    osd: 4 osds: 4 up (since 47h), 4 in (since 47h)
+ 
+  data:
+    pools:   2 pools, 33 pgs
+    objects: 0 objects, 0 B
+    usage:   4.5 GiB used, 36 GiB / 40 GiB avail
+    pgs:     33 active+clean
+```
