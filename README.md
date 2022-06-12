@@ -27,6 +27,9 @@
 * `CephFS`全称Ceph File System，是Ceph对外提供的文件系统服务。
 ## 13.MDS
 * `MDS`: 全称Ceph Metadata Server，是CephFS服务依赖的元数据服务。
+## 14.数据写入到最终落盘的两次映射
+* hash(文件,pool)求模PG数量(节点宕机不会影响PG数量) -> PG, CRUSH(PG,集群拓扑,规则) -> PG(OSD0,OSD1,OSD2)(在创建存储池的时候关系就建立,PG MAP维护映射关系)
+* 客户端获取mon维护的PG MAP
 ***
 # 二、安装
 ## 1.环境准备
@@ -201,3 +204,4 @@ set pool 4 size to 1
 [root@master ~]# ceph osd pool delete test2 test2  --yes-i-really-really-mean-it
 pool 'test2' removed
 ```
+***
